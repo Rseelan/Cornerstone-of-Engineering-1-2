@@ -1,0 +1,145 @@
+//Written by Husky Engineering 101 //emails: seelan.r@husky.neu.edu
+//include the fast LED library. #include <FastLED.h> 
+//include the liquid crystal library. #include <LiquidCrystal.h> 
+//define the pins that will be used for the LED strips 2 #define LED_PIN 12 //Energy Density #define LED_PIN2 10 //Greenhouse Gas Emissions #define LED_PIN3 13 //Reliability #define LED_PIN4 11 //Social Impact #define LED_PIN5 41 //Mash 
+//define the number of LEDS that the four "rating" strips has #define NUM_LEDS 10 
+//define the number of LEDS that the construction LED strip has #define NUM_LEDS1 31 
+//define the pins on the redboard that will be dedicated for the LCD using for budget. LiquidCrystal lcd(32, 30, 28, 26, 24, 22); 
+//defining the led strips with corresponding names and the number of LEDS each one has. 
+//Energy CRGB EnergyDensity[NUM_LEDS]; 
+//Ecofriendliness CRGB GreenhouseGasEmmissions[NUM_LEDS]; 
+59 
+//Cost CRGB Reliability[NUM_LEDS]; 
+//Happiness CRGB SocialImpact[NUM_LEDS]; 
+//define the mash led strip and the number of LEDs it has CRGB Mash[NUM_LEDS1]; 
+//Scores of each energy source. const int NaturalGasScore = 15; const int SolarScore = 25; const int NuclearScore = 30; const int CoalScore = 5; const int WindScore = 10; const int HydroScore = 25; 
+//set the value for the maximum number of mashes to "construct" an energy source to 30. const int MaxMashCounter = 30; 
+//assigning each of the six buttons different locations. const int Button1 = A5; const int Button2 = A4; const int Button3 = A3; const int Button4 = A2; const int Button5 = A1; const int Button6 = A0; 
+//location of reset button const int Button7 = 8; 
+//location of mash button const int mashbutton = 43; 
+//create states to verify if an energy source has been clicked on. int Button1Check = 0; int Button2Check = 0; int Button3Check = 0; int Button4Check = 0; int Button5Check = 0; int Button6Check = 0; 
+//create a state to verify whether a button has been pressed or not int buttonStateMash; 
+60 
+//create a counter that will increase by the value of one when the button has been pressed, set it to one. int mashcounter = 0; 
+//set the gamecounter to 0, meaning that no energy source selections have been made yet. int gamecounter = 0; int limitcounter = 0; 
+//this counter is used to differentiate whether the game is currently in play or in the end state int endgamecounter = 0; 
+//once the end state of the game has been reached, wait 4 seconds int endgamewait = 4000; 
+//once the mash button has been pressed, wait 3 milliseconds int mashwait = 3; 
+//set the counter to 60 double timecounter = 60; 
+//wait time once the button has been pressed const int wait = 3000; 
+//set the total score to zero int Score = 0; 
+//create variablies used for evaluating whether each of the six buttons representating different energy sources have been pressed. int buttonState1; int buttonState2; int buttonState3; int buttonState4; int buttonState5; int buttonState6; 
+void setup() { 
+//initialize the serial monitor Serial.begin(9600); 
+//Initialize the 16x2 LCD lcd.begin(16, 2); 
+//Clear any old data displayed on the LCD lcd.clear(); 
+61 
+//print the value of price to the LCD display. lcd.print(Score); 
+//specify these certain pin locations to be assigned as pins meant for evaluating whether the buttons has been pressed. 
+pinMode(Button1, INPUT); pinMode(Button2, INPUT); pinMode(Button3, INPUT); pinMode(Button4, INPUT); pinMode(Button5, INPUT); pinMode(Button6, INPUT); 
+//Initialize LED strips that will be used to describe the characteristics of each of the six different energy sources 
+FastLED.addLeds<WS2812, LED_PIN, GRB>(EnergyDensity, NUM_LEDS); FastLED.addLeds<WS2812, LED_PIN2, GRB>(GreenhouseGasEmmissions, NUM_LEDS); FastLED.addLeds<WS2812, LED_PIN3, GRB>(Reliability, NUM_LEDS); FastLED.addLeds<WS2812, LED_PIN4, GRB>(SocialImpact, NUM_LEDS); 
+//Initialize the construction LED strip pinMode(mashbutton, INPUT); FastLED.addLeds<WS2812, LED_PIN5, GRB>(Mash, NUM_LEDS1); 
+} void loop() { 
+//run this piece of code while the endgame counter is equivelent to zero while (endgamecounter == 0) { 
+//evaluate whether each button has been pressed. buttonState1 = digitalRead(Button1); buttonState2 = digitalRead(Button2); buttonState3 = digitalRead(Button3); buttonState4 = digitalRead(Button4); buttonState5 = digitalRead(Button5); buttonState6 = digitalRead(Button6); 
+//execute this code if button 1(Natural Gas) has been pressed if (buttonState 1 == LOW) { 
+//Turn off the entire energy density strip EnergyDensity[0] = CRGB::Black; FastLED.show(); EnergyDensity[1] = CRGB::Black; FastLED.show(); 
+62 
+EnergyDensity[2] = CRGB::Black; FastLED.show(); EnergyDensity[3] = CRGB::Black; FastLED.show(); EnergyDensity[4] = CRGB::Black; FastLED.show(); EnergyDensity[5] = CRGB::Black; FastLED.show(); EnergyDensity[6] = CRGB::Black; FastLED.show(); EnergyDensity[7] = CRGB::Black; FastLED.show(); EnergyDensity[8] = CRGB::Black; FastLED.show(); EnergyDensity[9] = CRGB::Black; FastLED.show(); 
+//Turn off the entire Green house gas emssions strip GreenhouseGasEmmissions[0] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[1] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[2] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[3] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[4] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[5] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[6] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[7] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[8] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[9] = CRGB::Black; FastLED.show(); 
+//Turn off the entire Reliability Strip Reliability[0] = CRGB::Black; FastLED.show(); Reliability[1] = CRGB::Black; FastLED.show(); Reliability[2] = CRGB::Black; FastLED.show(); 
+63 
+Reliability[3] = CRGB::Black; FastLED.show(); Reliability[4] = CRGB::Black; FastLED.show(); Reliability[5] = CRGB::Black; FastLED.show(); Reliability[6] = CRGB::Black; FastLED.show(); Reliability[7] = CRGB::Black; FastLED.show(); Reliability[8] = CRGB::Black; FastLED.show(); Reliability[9] = CRGB::Black; FastLED.show(); 
+//Turn off the entire Social Impact Strip SocialImpact[0] = CRGB::Black; FastLED.show(); SocialImpact[1] = CRGB::Black; FastLED.show(); SocialImpact[2] = CRGB::Black; FastLED.show(); SocialImpact[3] = CRGB::Black; FastLED.show(); SocialImpact[4] = CRGB::Black; FastLED.show(); SocialImpact[5] = CRGB::Black; FastLED.show(); SocialImpact[6] = CRGB::Black; FastLED.show(); SocialImpact[7] = CRGB::Black; FastLED.show(); SocialImpact[8] = CRGB::Black; FastLED.show(); SocialImpact[9] = CRGB::Black; FastLED.show(); 
+//clear and print the score to the LCD display lcd.clear(); lcd.print(Score); 
+//turn off the states of all the button checks except for button 1 check Button1Check = 1; Button2Check = 0; Button3Check = 0; Button4Check = 0; 
+64 
+Button5Check = 0; Button6Check = 0; } 
+//if the button 2(Solar) has been pressed, execute this piece of code else if (buttonState2 == LOW) { 
+//Turn off the entire energy density strip EnergyDensity[0] = CRGB::Black; FastLED.show(); EnergyDensity[1] = CRGB::Black; FastLED.show(); EnergyDensity[2] = CRGB::Black; FastLED.show(); EnergyDensity[3] = CRGB::Black; FastLED.show(); EnergyDensity[4] = CRGB::Black; FastLED.show(); EnergyDensity[5] = CRGB::Black; FastLED.show(); EnergyDensity[6] = CRGB::Black; FastLED.show(); EnergyDensity[7] = CRGB::Black; FastLED.show(); EnergyDensity[8] = CRGB::Black; FastLED.show(); EnergyDensity[9] = CRGB::Black; FastLED.show(); 
+//Turn off the entire Green house gas emssions strip GreenhouseGasEmmissions[0] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[1] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[2] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[3] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[4] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[5] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[6] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[7] = CRGB::Black; 
+65 
+FastLED.show(); GreenhouseGasEmmissions[8] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[9] = CRGB::Black; FastLED.show(); 
+//Turn off the entire Reliability Strip Reliability[0] = CRGB::Black; FastLED.show(); Reliability[1] = CRGB::Black; FastLED.show(); Reliability[2] = CRGB::Black; FastLED.show(); Reliability[3] = CRGB::Black; FastLED.show(); Reliability[4] = CRGB::Black; FastLED.show(); Reliability[5] = CRGB::Black; FastLED.show(); Reliability[6] = CRGB::Black; FastLED.show(); Reliability[7] = CRGB::Black; FastLED.show(); Reliability[8] = CRGB::Black; FastLED.show(); Reliability[9] = CRGB::Black; FastLED.show(); 
+//Turn off the entire Social Impact Strip SocialImpact[0] = CRGB::Black; FastLED.show(); SocialImpact[1] = CRGB::Black; FastLED.show(); SocialImpact[2] = CRGB::Black; FastLED.show(); SocialImpact[3] = CRGB::Black; FastLED.show(); SocialImpact[4] = CRGB::Black; FastLED.show(); SocialImpact[5] = CRGB::Black; FastLED.show(); SocialImpact[6] = CRGB::Black; FastLED.show(); SocialImpact[7] = CRGB::Black; FastLED.show(); SocialImpact[8] = CRGB::Black; 
+66 
+FastLED.show(); SocialImpact[9] = CRGB::Black; FastLED.show(); 
+//clear the lcd and print the score onto it lcd.clear(); lcd.print(Score); 
+//turn on the state of button 2 and turn the others off. Button1Check = 0; Button2Check = 1; Button3Check = 0; Button4Check = 0; Button5Check = 0; Button6Check = 0; } 
+//if button three(Nuclear) has been pressed, execute this code else if (buttonState3 == LOW) { 
+//Turn off the entire energy density strip EnergyDensity[0] = CRGB::Black; FastLED.show(); EnergyDensity[1] = CRGB::Black; FastLED.show(); EnergyDensity[2] = CRGB::Black; FastLED.show(); EnergyDensity[3] = CRGB::Black; FastLED.show(); EnergyDensity[4] = CRGB::Black; FastLED.show(); EnergyDensity[5] = CRGB::Black; FastLED.show(); EnergyDensity[6] = CRGB::Black; FastLED.show(); EnergyDensity[7] = CRGB::Black; FastLED.show(); EnergyDensity[8] = CRGB::Black; FastLED.show(); EnergyDensity[9] = CRGB::Black; FastLED.show(); 
+//Turn off the entire Green house gas emssions strip GreenhouseGasEmmissions[0] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[1] = CRGB::Black; 
+67 
+FastLED.show(); GreenhouseGasEmmissions[2] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[3] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[4] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[5] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[6] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[7] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[8] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[9] = CRGB::Black; FastLED.show(); 
+//Turn off the entire Reliability Strip Reliability[0] = CRGB::Black; FastLED.show(); Reliability[1] = CRGB::Black; FastLED.show(); Reliability[2] = CRGB::Black; FastLED.show(); Reliability[3] = CRGB::Black; FastLED.show(); Reliability[4] = CRGB::Black; FastLED.show(); Reliability[5] = CRGB::Black; FastLED.show(); Reliability[6] = CRGB::Black; FastLED.show(); Reliability[7] = CRGB::Black; FastLED.show(); Reliability[8] = CRGB::Black; FastLED.show(); Reliability[9] = CRGB::Black; FastLED.show(); 
+//Turn off the entire Social Impact Strip SocialImpact[0] = CRGB::Black; FastLED.show(); SocialImpact[1] = CRGB::Black; FastLED.show(); SocialImpact[2] = CRGB::Black; 
+68 
+FastLED.show(); SocialImpact[3] = CRGB::Black; FastLED.show(); SocialImpact[4] = CRGB::Black; FastLED.show(); SocialImpact[5] = CRGB::Black; FastLED.show(); SocialImpact[6] = CRGB::Black; FastLED.show(); SocialImpact[7] = CRGB::Black; FastLED.show(); SocialImpact[8] = CRGB::Black; FastLED.show(); SocialImpact[9] = CRGB::Black; FastLED.show(); 
+//clear and print the score to the LCD lcd.clear(); lcd.print(Score); 
+//turn off all the other button states and turn on the state of button 3 Button1Check = 0; Button2Check = 0; Button3Check = 1; Button4Check = 0; Button5Check = 0; Button6Check = 0; } 
+//if button four (Coal) has been pressed else if (buttonState4 == LOW) { 
+//Turn off the entire energy density strip EnergyDensity[0] = CRGB::Black; FastLED.show(); EnergyDensity[1] = CRGB::Black; FastLED.show(); EnergyDensity[2] = CRGB::Black; FastLED.show(); EnergyDensity[3] = CRGB::Black; FastLED.show(); EnergyDensity[4] = CRGB::Black; FastLED.show(); EnergyDensity[5] = CRGB::Black; FastLED.show(); EnergyDensity[6] = CRGB::Black; 
+69 
+FastLED.show(); EnergyDensity[7] = CRGB::Black; FastLED.show(); EnergyDensity[8] = CRGB::Black; FastLED.show(); EnergyDensity[9] = CRGB::Black; FastLED.show(); 
+//Turn off the entire Green house gas emssions strip GreenhouseGasEmmissions[0] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[1] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[2] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[3] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[4] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[5] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[6] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[7] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[8] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[9] = CRGB::Black; FastLED.show(); 
+//Turn off the entire Reliability Strip Reliability[0] = CRGB::Black; FastLED.show(); Reliability[1] = CRGB::Black; FastLED.show(); Reliability[2] = CRGB::Black; FastLED.show(); Reliability[3] = CRGB::Black; FastLED.show(); Reliability[4] = CRGB::Black; FastLED.show(); Reliability[5] = CRGB::Black; FastLED.show(); Reliability[6] = CRGB::Black; FastLED.show(); Reliability[7] = CRGB::Black; 
+70 
+FastLED.show(); Reliability[8] = CRGB::Black; FastLED.show(); Reliability[9] = CRGB::Black; FastLED.show(); 
+//Turn off the entire Social Impact Strip SocialImpact[0] = CRGB::Black; FastLED.show(); SocialImpact[1] = CRGB::Black; FastLED.show(); SocialImpact[2] = CRGB::Black; FastLED.show(); SocialImpact[3] = CRGB::Black; FastLED.show(); SocialImpact[4] = CRGB::Black; FastLED.show(); SocialImpact[5] = CRGB::Black; FastLED.show(); SocialImpact[6] = CRGB::Black; FastLED.show(); SocialImpact[7] = CRGB::Black; FastLED.show(); SocialImpact[8] = CRGB::Black; FastLED.show(); SocialImpact[9] = CRGB::Black; FastLED.show(); 
+//cleat the lcd display and turn on the score lcd.clear(); lcd.print(Score); 
+//turn off all the states for each of the six energy sources except for the fourth one Button1Check = 0; Button2Check = 0; Button3Check = 0; Button4Check = 1; Button5Check = 0; Button6Check = 0; } 
+//execute this piece of code if the fifth button(wind) has been pressed else if (buttonState5 == LOW) { 
+//Turn off the entire energy density strip EnergyDensity[0] = CRGB::Black; 
+71 
+FastLED.show(); EnergyDensity[1] = CRGB::Black; FastLED.show(); EnergyDensity[2] = CRGB::Black; FastLED.show(); EnergyDensity[3] = CRGB::Black; FastLED.show(); EnergyDensity[4] = CRGB::Black; FastLED.show(); EnergyDensity[5] = CRGB::Black; FastLED.show(); EnergyDensity[6] = CRGB::Black; FastLED.show(); EnergyDensity[7] = CRGB::Black; FastLED.show(); EnergyDensity[8] = CRGB::Black; FastLED.show(); EnergyDensity[9] = CRGB::Black; FastLED.show(); 
+//Turn off the entire Green house gas emssions strip GreenhouseGasEmmissions[0] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[1] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[2] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[3] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[4] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[5] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[6] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[7] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[8] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[9] = CRGB::Black; FastLED.show(); 
+//Turn off the entire Reliability Strip Reliability[0] = CRGB::Black; FastLED.show(); Reliability[1] = CRGB::Black; 
+72 
+FastLED.show(); Reliability[2] = CRGB::Black; FastLED.show(); Reliability[3] = CRGB::Black; FastLED.show(); Reliability[4] = CRGB::Black; FastLED.show(); Reliability[5] = CRGB::Black; FastLED.show(); Reliability[6] = CRGB::Black; FastLED.show(); Reliability[7] = CRGB::Black; FastLED.show(); Reliability[8] = CRGB::Black; FastLED.show(); Reliability[9] = CRGB::Black; FastLED.show(); 
+//Turn off the entire Social Impact Strip SocialImpact[0] = CRGB::Black; FastLED.show(); SocialImpact[1] = CRGB::Black; FastLED.show(); SocialImpact[2] = CRGB::Black; FastLED.show(); SocialImpact[3] = CRGB::Black; FastLED.show(); SocialImpact[4] = CRGB::Black; FastLED.show(); SocialImpact[5] = CRGB::Black; FastLED.show(); SocialImpact[6] = CRGB::Black; FastLED.show(); SocialImpact[7] = CRGB::Black; FastLED.show(); SocialImpact[8] = CRGB::Black; FastLED.show(); SocialImpact[9] = CRGB::Black; FastLED.show(); 
+//clear the lcd screen and display the score lcd.clear(); lcd.print(Score); 
+//turn of all the states for each of the energy sources except for the fifth one Button1Check = 0; 
+73 
+Button2Check = 0; Button3Check = 0; Button4Check = 0; Button5Check = 1; Button6Check = 0; } 
+//execute this piece of code(hydro) if the six button has been turned on else if (buttonState6 == LOW) { 
+//Turn off the entire energy density strip EnergyDensity[0] = CRGB::Black; FastLED.show(); EnergyDensity[1] = CRGB::Black; FastLED.show(); EnergyDensity[2] = CRGB::Black; FastLED.show(); EnergyDensity[3] = CRGB::Black; FastLED.show(); EnergyDensity[4] = CRGB::Black; FastLED.show(); EnergyDensity[5] = CRGB::Black; FastLED.show(); EnergyDensity[6] = CRGB::Black; FastLED.show(); EnergyDensity[7] = CRGB::Black; FastLED.show(); EnergyDensity[8] = CRGB::Black; FastLED.show(); EnergyDensity[9] = CRGB::Black; FastLED.show(); 
+//Turn off the entire Green house gas emssions strip GreenhouseGasEmmissions[0] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[1] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[2] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[3] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[4] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[5] = CRGB::Black; FastLED.show(); 
+74 
+GreenhouseGasEmmissions[6] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[7] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[8] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[9] = CRGB::Black; FastLED.show(); 
+//Turn off the entire Reliability Strip Reliability[0] = CRGB::Black; FastLED.show(); Reliability[1] = CRGB::Black; FastLED.show(); Reliability[2] = CRGB::Black; FastLED.show(); Reliability[3] = CRGB::Black; FastLED.show(); Reliability[4] = CRGB::Black; FastLED.show(); Reliability[5] = CRGB::Black; FastLED.show(); Reliability[6] = CRGB::Black; FastLED.show(); Reliability[7] = CRGB::Black; FastLED.show(); Reliability[8] = CRGB::Black; FastLED.show(); Reliability[9] = CRGB::Black; FastLED.show(); 
+//Turn off the entire Social Impact Strip SocialImpact[0] = CRGB::Black; FastLED.show(); SocialImpact[1] = CRGB::Black; FastLED.show(); SocialImpact[2] = CRGB::Black; FastLED.show(); SocialImpact[3] = CRGB::Black; FastLED.show(); SocialImpact[4] = CRGB::Black; FastLED.show(); SocialImpact[5] = CRGB::Black; FastLED.show(); SocialImpact[6] = CRGB::Black; FastLED.show(); 
+75 
+SocialImpact[7] = CRGB::Black; FastLED.show(); SocialImpact[8] = CRGB::Black; FastLED.show(); SocialImpact[9] = CRGB::Black; FastLED.show(); 
+lcd.clear(); lcd.print(Score); 
+//turn of all the other button states except for button 6 Button1Check = 0; Button2Check = 0; Button3Check = 0; Button4Check = 0; Button5Check = 0; Button6Check = 1; } 
+//if buttons 2 and 4, begin the game if ((buttonState2 == LOW) && (buttonState4 == LOW)) { 
+//print out a "Y" to begin the game Serial.println("Y"); 
+//delay for three seconds delay (3000); 
+//Turn off the entire energy density strip EnergyDensity[0] = CRGB::Black; FastLED.show(); EnergyDensity[1] = CRGB::Black; FastLED.show(); EnergyDensity[2] = CRGB::Black; FastLED.show(); EnergyDensity[3] = CRGB::Black; FastLED.show(); EnergyDensity[4] = CRGB::Black; FastLED.show(); EnergyDensity[5] = CRGB::Black; FastLED.show(); EnergyDensity[6] = CRGB::Black; FastLED.show(); EnergyDensity[7] = CRGB::Black; FastLED.show(); 
+76 
+EnergyDensity[8] = CRGB::Black; FastLED.show(); EnergyDensity[9] = CRGB::Black; FastLED.show(); 
+//Turn off the entire Green house gas emssions strip GreenhouseGasEmmissions[0] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[1] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[2] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[3] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[4] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[5] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[6] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[7] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[8] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[9] = CRGB::Black; FastLED.show(); 
+//Turn off the entire Reliability Strip Reliability[0] = CRGB::Black; FastLED.show(); Reliability[1] = CRGB::Black; FastLED.show(); Reliability[2] = CRGB::Black; FastLED.show(); Reliability[3] = CRGB::Black; FastLED.show(); Reliability[4] = CRGB::Black; FastLED.show(); Reliability[5] = CRGB::Black; FastLED.show(); Reliability[6] = CRGB::Black; FastLED.show(); Reliability[7] = CRGB::Black; FastLED.show(); Reliability[8] = CRGB::Black; FastLED.show(); 
+77 
+Reliability[9] = CRGB::Black; FastLED.show(); 
+//Turn off the entire Social Impact Strip SocialImpact[0] = CRGB::Black; FastLED.show(); SocialImpact[1] = CRGB::Black; FastLED.show(); SocialImpact[2] = CRGB::Black; FastLED.show(); SocialImpact[3] = CRGB::Black; FastLED.show(); SocialImpact[4] = CRGB::Black; FastLED.show(); SocialImpact[5] = CRGB::Black; FastLED.show(); SocialImpact[6] = CRGB::Black; FastLED.show(); SocialImpact[7] = CRGB::Black; FastLED.show(); SocialImpact[8] = CRGB::Black; FastLED.show(); SocialImpact[9] = CRGB::Black; FastLED.show(); 
+//set all the button states to zero Button1Check = 0; Button2Check = 0; Button3Check = 0; Button4Check = 0; Button5Check = 0; Button6Check = 0; 
+//clear the lcd screen and print out the score(should be zero) lcd.clear(); lcd.print(Score); 
+} 
+// if both of these buttons are pressed on, reset the entire game if ((buttonState1 == LOW) && (buttonState6 == LOW)) { 
+//serial print "R" 
+78 
+Serial.println("R"); 
+//set the score to zero Score = 0; 
+//set the mash counter to 0 mashcounter = 0; 
+//set the end game counter to 0 endgamecounter = 0; 
+//clear the screen and print the score lcd.clear(); lcd.print(Score); 
+//turn off all the states for all the energy sources Button1Check = 0; Button2Check = 0; Button3Check = 0; Button4Check = 0; Button5Check = 0; Button6Check = 0; 
+//Turn off the entire energy density strip EnergyDensity[0] = CRGB::Black; FastLED.show(); EnergyDensity[1] = CRGB::Black; FastLED.show(); EnergyDensity[2] = CRGB::Black; FastLED.show(); EnergyDensity[3] = CRGB::Black; FastLED.show(); EnergyDensity[4] = CRGB::Black; FastLED.show(); EnergyDensity[5] = CRGB::Black; FastLED.show(); EnergyDensity[6] = CRGB::Black; FastLED.show(); EnergyDensity[7] = CRGB::Black; FastLED.show(); EnergyDensity[8] = CRGB::Black; FastLED.show(); EnergyDensity[9] = CRGB::Black; FastLED.show(); 
+//Turn off the entire Green house gas emssions strip 
+79 
+GreenhouseGasEmmissions[0] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[1] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[2] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[3] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[4] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[5] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[6] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[7] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[8] = CRGB::Black; FastLED.show(); GreenhouseGasEmmissions[9] = CRGB::Black; FastLED.show(); 
+//Turn off the entire Reliability Strip Reliability[0] = CRGB::Black; FastLED.show(); Reliability[1] = CRGB::Black; FastLED.show(); Reliability[2] = CRGB::Black; FastLED.show(); Reliability[3] = CRGB::Black; FastLED.show(); Reliability[4] = CRGB::Black; FastLED.show(); Reliability[5] = CRGB::Black; FastLED.show(); Reliability[6] = CRGB::Black; FastLED.show(); Reliability[7] = CRGB::Black; FastLED.show(); Reliability[8] = CRGB::Black; FastLED.show(); Reliability[9] = CRGB::Black; FastLED.show(); 
+//Turn off the entire Social Impact Strip SocialImpact[0] = CRGB::Black; FastLED.show(); 
+80 
